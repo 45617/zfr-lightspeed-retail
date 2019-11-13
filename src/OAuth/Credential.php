@@ -51,7 +51,7 @@ final class Credential
      */
     public function __construct(
         string $referenceId,
-        int $lightspeedAccountId,
+        ?int $lightspeedAccountId,
         string $accessToken,
         string $refreshToken
     ) {
@@ -100,7 +100,7 @@ final class Credential
     /**
      * @return int
      */
-    public function getLightspeedAccountId(): int
+    public function getLightspeedAccountId(): ?int
     {
         return $this->lightspeedAccountId;
     }
