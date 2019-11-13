@@ -25,6 +25,9 @@ return [
             'httpMethod'    => 'GET',
             'uri'           => 'https://api.lightspeedapp.com/API/Account.json',
             'responseModel' => 'GenericModel',
+            'data'          => [
+                'root_key'      => 'Account',
+            ],
         ],
         /**
          * --------------------------------------------------------------------------------
