@@ -21,7 +21,11 @@ return [
     'description' => 'Lightspeed Retail API',
     'baseUri'     => 'https://api.merchantos.com/API/',
     'operations'  => [
-
+        'GetAccount' => [
+            'httpMethod'    => 'GET',
+            'uri'           => 'https://api.lightspeedapp.com/API/Account.json',
+            'responseModel' => 'GenericModel',
+        ],
         /**
          * --------------------------------------------------------------------------------
          * CUSTOMER RELATED METHODS
