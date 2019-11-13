@@ -38,6 +38,9 @@ use ZfrLightspeedRetail\OAuth\CredentialStorage\CredentialStorageInterface;
  *
  * @author Daniel Gimenes
  * @author Michaël Gallego
+ * @author Zoltan Szanto
+ *
+ * @method ResultInterface getAccount()
  *
  * CUSTOMER RELATED METHODS:
  *
