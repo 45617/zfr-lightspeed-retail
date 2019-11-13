@@ -19,7 +19,7 @@
 return [
     'name'        => 'LightspeedRetail',
     'description' => 'Lightspeed Retail API',
-    'baseUri'     => 'https://api.merchantos.com/API/',
+    'baseUri'     => 'https://api.lightspeedapp.com/API/',
     'operations'  => [
         'GetAccount' => [
             'httpMethod'    => 'GET',
