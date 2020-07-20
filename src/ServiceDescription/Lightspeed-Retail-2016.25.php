@@ -481,6 +481,37 @@ return [
                 'location' => 'query',
             ],
         ],
+
+        'GetCategories' => [
+            'httpMethod'    => 'GET',
+            'uri'           => 'Account/{accountID}/Category.json',
+            'responseModel' => 'GenericModel',
+            'data'          => [
+                'root_key'      => 'Category',
+                'is_collection' => true,
+            ],
+            'parameters' => [
+                'accountID' => [
+                    'location' => 'uri',
+                    'type'     => 'integer',
+                    'required' => false,
+                ],
+                'limit' => [
+                    'location' => 'query',
+                    'required' => false,
+                    'type'     => 'integer',
+                ],
+                'offset' => [
+                    'location' => 'query',
+                    'required' => false,
+                    'type'     => 'integer',
+                ],
+
+            ],
+            'additionalParameters' => [
+                'location' => 'query',
+            ],
+        ],
     ],
 
     'models' => [
