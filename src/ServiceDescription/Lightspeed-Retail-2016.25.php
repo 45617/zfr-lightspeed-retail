@@ -86,6 +86,55 @@ return [
                 'location' => 'query',
             ],
         ],
+        'GetCustomersAttributes' => [
+            'httpMethod'    => 'GET',
+            'uri'           => 'Account/{accountID}/Customer.json',
+            'responseModel' => 'GenericModel',
+            'data'          => [
+                'root_key'      => '@attributes',
+                'is_collection' => false,
+            ],
+            'parameters' => [
+                'accountID' => [
+                    'location' => 'uri',
+                    'type'     => 'integer',
+                    'required' => false,
+                ],
+                'limit' => [
+                    'location' => 'query',
+                    'required' => false,
+                    'type'     => 'integer',
+                ],
+                'offset' => [
+                    'location' => 'query',
+                    'required' => false,
+                    'type'     => 'integer',
+                ],
+                'archived' => [
+                    'location' => 'query',
+                    'required' => false,
+                    'type'     => 'boolean',
+                ],
+                'timeStamp' => [
+                    'location' => 'query',
+                    'required' => false,
+                    'type'     => 'string',
+                ],
+                'load_relations' => [
+                    'location' => 'query',
+                    'type'     => 'string',
+                    'required' => false,
+                ],
+                'orderby' => [
+                    'location' => 'query',
+                    'type'     => 'string',
+                    'required' => false,
+                ],
+            ],
+            'additionalParameters' => [
+                'location' => 'query',
+            ],
+        ],
 
         'GetCustomer' => [
             'httpMethod'    => 'GET',
@@ -218,6 +267,55 @@ return [
             'data'          => [
                 'root_key'      => 'Item',
                 'is_collection' => true,
+            ],
+            'parameters' => [
+                'accountID' => [
+                    'location' => 'uri',
+                    'type'     => 'integer',
+                    'required' => false,
+                ],
+                'limit' => [
+                    'location' => 'query',
+                    'required' => false,
+                    'type'     => 'integer',
+                ],
+                'offset' => [
+                    'location' => 'query',
+                    'required' => false,
+                    'type'     => 'integer',
+                ],
+                'archived' => [
+                    'location' => 'query',
+                    'required' => false,
+                    'type'     => 'boolean',
+                ],
+                'timeStamp' => [
+                    'location' => 'query',
+                    'required' => false,
+                    'type'     => 'string',
+                ],
+                'load_relations' => [
+                    'location' => 'query',
+                    'type'     => 'string',
+                    'required' => false,
+                ],
+                'orderby' => [
+                    'location' => 'query',
+                    'type'     => 'string',
+                    'required' => false,
+                ],
+            ],
+            'additionalParameters' => [
+                'location' => 'query',
+            ],
+        ],
+        'GetItemsAttributes' => [
+            'httpMethod'    => 'GET',
+            'uri'           => 'Account/{accountID}/Item.json',
+            'responseModel' => 'GenericModel',
+            'data'          => [
+                'root_key'      => '@attributes',
+                'is_collection' => false,
             ],
             'parameters' => [
                 'accountID' => [
@@ -415,7 +513,55 @@ return [
                 'location' => 'query',
             ],
         ],
-
+        'GetSalesAttributes' => [
+            'httpMethod'    => 'GET',
+            'uri'           => 'Account/{accountID}/Sale.json',
+            'responseModel' => 'GenericModel',
+            'data'          => [
+                'root_key'      => '@attributes',
+                'is_collection' => false,
+            ],
+            'parameters' => [
+                'accountID' => [
+                    'location' => 'uri',
+                    'type'     => 'integer',
+                    'required' => false,
+                ],
+                'limit' => [
+                    'location' => 'query',
+                    'required' => false,
+                    'type'     => 'integer',
+                ],
+                'offset' => [
+                    'location' => 'query',
+                    'required' => false,
+                    'type'     => 'integer',
+                ],
+                'archived' => [
+                    'location' => 'query',
+                    'required' => false,
+                    'type'     => 'boolean',
+                ],
+                'timeStamp' => [
+                    'location' => 'query',
+                    'required' => false,
+                    'type'     => 'string',
+                ],
+                'load_relations' => [
+                    'location' => 'query',
+                    'type'     => 'string',
+                    'required' => false,
+                ],
+                'orderby' => [
+                    'location' => 'query',
+                    'type'     => 'string',
+                    'required' => false,
+                ],
+            ],
+            'additionalParameters' => [
+                'location' => 'query',
+            ],
+        ],
         'GetSale' => [
             'httpMethod'    => 'GET',
             'uri'           => 'Account/{accountID}/Sale/{saleID}.json',
