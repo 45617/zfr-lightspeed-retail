@@ -105,9 +105,9 @@ class LightspeedRetailClient
         $handlerStack->push(LeakyBucketMiddleware::wrapped());
 
         // HTTP Middleware that retries requests according to our retry strategy
-        $handlerStack->push(Middleware::retry(new RetryStrategy($config['max_retries'] ?? 10)));
+        $handlerStack->push(Middleware::retry(new RetryStrategy($config['max_retries'] ?? 3)));
 
-        $httpClient   = new Client(['handler' => $handlerStack]);
+        $httpClient   = new Client(['handler' => $handlerStack, 'timeout' => 60, 'connect_timeout' => 60]);
         $description  = new Description(require __DIR__ . '/ServiceDescription/Lightspeed-Retail-2016.25.php');
         $deserializer = new Deserializer(new GuzzleDeserializer($description, true), $description);
         $clientConfig = [];
