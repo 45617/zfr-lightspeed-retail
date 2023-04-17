@@ -19,7 +19,7 @@
 return [
     'name'        => 'LightspeedRetail',
     'description' => 'Lightspeed Retail API',
-    'baseUri'     => 'https://api.lightspeedapp.com/API/',
+    'baseUri'     => 'https://api.lightspeedapp.com/API/V3/',
     'operations'  => [
         'GetAccount' => [
             'httpMethod'    => 'GET',
