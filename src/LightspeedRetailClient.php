@@ -63,12 +63,18 @@ use ZfrLightspeedRetail\OAuth\CredentialStorage\CredentialStorageInterface;
  * SALE LINE RELATED METHODS:
  *
  * @method ResultInterface getSaleLine(array $args = [])
+ * 
+ * WORKORDER RELATED METHODS:
+ *
+ * @method ResultInterface getWorkorderStatuses(array $args = [])
+ * @method ResultInterface getWorkorderStatus(array $args = [])
  *
  * ITERATOR METHODS:
  *
  * @method Traversable getCustomersIterator(array $args = [])
  * @method Traversable getItemsIterator(array $args = [])
  * @method Traversable getSalesIterator(array $args = [])
+ * @method Traversable getWorkorderStatusesIterator(array $args = [])
  */
 class LightspeedRetailClient
 {
@@ -113,7 +119,7 @@ class LightspeedRetailClient
         $clientConfig = [];
 
         // If a default reference ID is provided in config, we add it as default command param
-        if (! empty($config['reference_id'])) {
+        if (!empty($config['reference_id'])) {
             $clientConfig['defaults']['referenceID'] = $config['reference_id'];
         }
 

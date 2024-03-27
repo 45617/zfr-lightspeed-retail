@@ -33,7 +33,7 @@ return [
          * --------------------------------------------------------------------------------
          * CUSTOMER RELATED METHODS
          *
-         * DOC: http://developers.lightspeedhq.com/retail/endpoints/Account-Customer/
+         * DOC: http://developers.lightspeedhq.com/retail/endpoints/Customer/
          * --------------------------------------------------------------------------------
          */
 
@@ -256,7 +256,7 @@ return [
          * --------------------------------------------------------------------------------
          * ITEM RELATED METHODS
          *
-         * DOC: http://developers.lightspeedhq.com/retail/endpoints/Account-Item/
+         * DOC: http://developers.lightspeedhq.com/retail/endpoints/Item/
          * --------------------------------------------------------------------------------
          */
 
@@ -460,7 +460,7 @@ return [
          * --------------------------------------------------------------------------------
          * SALE RELATED METHODS
          *
-         * DOC: http://developers.lightspeedhq.com/retail/endpoints/Account-Sale/
+         * DOC: http://developers.lightspeedhq.com/retail/endpoints/Sale/
          * --------------------------------------------------------------------------------
          */
 
@@ -595,7 +595,7 @@ return [
          * --------------------------------------------------------------------------------
          * SALE LINE RELATED METHODS
          *
-         * DOC: http://developers.lightspeedhq.com/retail/endpoints/Account-SaleLine/
+         * DOC: https://developers.lightspeedhq.com/retail/endpoints/SaleLine/
          * --------------------------------------------------------------------------------
          */
 
@@ -658,6 +658,136 @@ return [
                 'location' => 'query',
             ],
         ],
+
+        /**
+         * --------------------------------------------------------------------------------
+         * DISPLAYTEMPLATE RELATED METHODS
+         *
+         * DOC: https://developers.lightspeedhq.com/retail/endpoints/DisplayTemplate-Workorder/
+         * --------------------------------------------------------------------------------
+         */
+        'GetDisplayTemplateWorkorder' => [
+            'httpMethod'    => 'GET',
+            'uri'           => 'Account/{accountID}/DisplayTemplate/Workorder/{workorderID}.html',
+            'responseModel' => 'HTML',
+            'parameters' => [
+                'accountID' => [
+                    'location' => 'uri',
+                    'type'     => 'integer',
+                    'required' => false,
+                ],
+                'workorderID' => [
+                    'location' => 'uri',
+                    'type'     => 'integer',
+                    'required' => false,
+                ],
+                'template' => [
+                    'location' => 'query',
+                    'required' => false,
+                    'type'     => 'string',
+                ],
+            ],
+            'additionalParameters' => [
+                'location' => 'query',
+            ],
+        ],
+        /**
+         * --------------------------------------------------------------------------------
+         * WORKORDER RELATED METHODS
+         *
+         * DOC: https://developers.lightspeedhq.com/retail/endpoints/Workorder/
+         * --------------------------------------------------------------------------------
+         */
+        'GetWorkorder' => [
+            'httpMethod'    => 'GET',
+            'uri'           => 'Account/{accountID}/Workorder/{workorderID}.json',
+            'responseModel' => 'GenericModel',
+            'data'          => [
+                'root_key'      => 'Workorder',
+                'is_collection' => false,
+            ],
+            'parameters' => [
+                'accountID' => [
+                    'location' => 'uri',
+                    'type'     => 'integer',
+                    'required' => false,
+                ],
+                'workorderID' => [
+                    'location' => 'uri',
+                    'type'     => 'integer',
+                    'required' => false,
+                ],
+            ],
+            'additionalParameters' => [
+                'location' => 'query',
+            ],
+        ],
+
+        'GetWorkorders' => [
+            'httpMethod'    => 'GET',
+            'uri'           => 'Account/{accountID}/Workorder.json',
+            'responseModel' => 'GenericModel',
+            'data'          => [
+                'root_key'      => 'Workorder',
+                'is_collection' => false,
+            ],
+            'parameters' => [
+                'accountID' => [
+                    'location' => 'uri',
+                    'type'     => 'integer',
+                    'required' => false,
+                ],
+            ],
+            'additionalParameters' => [
+                'location' => 'query',
+            ],
+        ],
+
+        'GetWorkorderStatus' => [
+            'httpMethod'    => 'GET',
+            'uri'           => 'Account/{accountID}/WorkorderStatus/{workorderStatusID}.json',
+            'responseModel' => 'GenericModel',
+            'data'          => [
+                'root_key'      => 'WorkorderStatus',
+                'is_collection' => false,
+            ],
+            'parameters' => [
+                'accountID' => [
+                    'location' => 'uri',
+                    'type'     => 'integer',
+                    'required' => false,
+                ],
+                'workorderStatusID' => [
+                    'location' => 'uri',
+                    'type'     => 'integer',
+                    'required' => false,
+                ],
+            ],
+            'additionalParameters' => [
+                'location' => 'query',
+            ],
+        ],
+
+        'GetWorkorderStatuses' => [
+            'httpMethod'    => 'GET',
+            'uri'           => 'Account/{accountID}/WorkorderStatus.json',
+            'responseModel' => 'GenericModel',
+            'data'          => [
+                'root_key'      => 'WorkorderStatus',
+                'is_collection' => true,
+            ],
+            'parameters' => [
+                'accountID' => [
+                    'location' => 'uri',
+                    'type'     => 'integer',
+                    'required' => false,
+                ],
+            ],
+            'additionalParameters' => [
+                'location' => 'query',
+            ],
+        ],
+
     ],
 
     'models' => [
@@ -666,6 +796,10 @@ return [
             'additionalProperties' => [
                 'location' => 'json',
             ],
+        ],
+        'HTML' => [
+            'type' => 'array',
+            'location' => 'body',
         ],
     ],
 ];
