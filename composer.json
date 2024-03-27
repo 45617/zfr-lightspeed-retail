@@ -1,5 +1,5 @@
 {
-    "name": "prestachamps/lightspeed-retail-api-client",
+    "name": "45617/lightspeed-retail-api-client",
     "type": "library",
     "license": "MIT",
     "description" : "PHP library for interacting with the Lightspeed Retail REST API",
@@ -9,7 +9,7 @@
         "pos",
         "api"
     ],
-    "homepage": "https://github.com/zf-fr/zfr-lightspeed-retail",
+    "homepage": "https://github.com/45617/zfr-lightspeed-retail",
     "authors": [
         {
             "name": "Daniel Gimenes",
