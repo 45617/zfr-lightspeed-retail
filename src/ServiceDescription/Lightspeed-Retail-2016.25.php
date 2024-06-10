@@ -456,6 +456,113 @@ return [
             ],
         ],
 
+        'GetCatalogVendorItem' => [
+            'httpMethod'    => 'GET',
+            'uri'           => 'Account/{accountID}/CatalogVendorItem/{catalogVendorItemID}.json',
+            'responseModel' => 'GenericModel',
+            'data'          => [
+                'root_key' => 'CatalogVendorItem',
+            ],
+            'parameters' => [
+                'accountID' => [
+                    'location' => 'uri',
+                    'type'     => 'integer',
+                    'required' => false,
+                ],
+                'catalogVendorItemID' => [
+                    'location' => 'uri',
+                    'type'     => 'integer',
+                    'required' => false,
+                ],
+                'load_relations' => [
+                    'location' => 'query',
+                    'type'     => 'string',
+                    'required' => false,
+                ],
+            ],
+            'additionalParameters' => [
+                'location' => 'query',
+            ],
+        ],
+
+        'GetCatalogVendorItems' => [
+            'httpMethod'    => 'GET',
+            'uri'           => 'Account/{accountID}/CatalogVendorItem.json',
+            'responseModel' => 'GenericModel',
+            'data'          => [
+                'root_key' => 'CatalogVendorItem',
+                'is_collection' => true,
+            ],
+            'parameters' => [
+                'accountID' => [
+                    'location' => 'uri',
+                    'type'     => 'integer',
+                    'required' => false,
+                ],
+                'load_relations' => [
+                    'location' => 'query',
+                    'type'     => 'string',
+                    'required' => false,
+                ],
+            ],
+            'additionalParameters' => [
+                'location' => 'query',
+            ],
+        ],
+
+        'GetCatalogVendorItem' => [
+            'httpMethod'    => 'GET',
+            'uri'           => 'Account/{accountID}/CatalogVendorItem/{catalogVendorItemID}.json',
+            'responseModel' => 'GenericModel',
+            'data'          => [
+                'root_key' => 'CatalogVendorItem',
+            ],
+            'parameters' => [
+                'accountID' => [
+                    'location' => 'uri',
+                    'type'     => 'integer',
+                    'required' => false,
+                ],
+                'catalogVendorItemID' => [
+                    'location' => 'uri',
+                    'type'     => 'integer',
+                    'required' => false,
+                ],
+                'load_relations' => [
+                    'location' => 'query',
+                    'type'     => 'string',
+                    'required' => false,
+                ],
+            ],
+            'additionalParameters' => [
+                'location' => 'query',
+            ],
+        ],
+
+        'GetVendors' => [
+            'httpMethod'    => 'GET',
+            'uri'           => 'Account/{accountID}/Vendor.json',
+            'responseModel' => 'GenericModel',
+            'data'          => [
+                'root_key' => 'Vendor',
+                'is_collection' => true,
+            ],
+            'parameters' => [
+                'accountID' => [
+                    'location' => 'uri',
+                    'type'     => 'integer',
+                    'required' => false,
+                ],
+                'load_relations' => [
+                    'location' => 'query',
+                    'type'     => 'string',
+                    'required' => false,
+                ],
+            ],
+            'additionalParameters' => [
+                'location' => 'query',
+            ],
+        ],
         /**
          * --------------------------------------------------------------------------------
          * SALE RELATED METHODS
@@ -598,7 +705,6 @@ return [
          * DOC: https://developers.lightspeedhq.com/retail/endpoints/SaleLine/
          * --------------------------------------------------------------------------------
          */
-
         'GetSaleLine' => [
             'httpMethod'    => 'GET',
             'uri'           => 'Account/{accountID}/SaleLine/{saleLineID}.json',
@@ -613,6 +719,31 @@ return [
                     'required' => false,
                 ],
                 'saleLineID' => [
+                    'location' => 'uri',
+                    'type'     => 'integer',
+                    'required' => false,
+                ],
+                'load_relations' => [
+                    'location' => 'query',
+                    'type'     => 'string',
+                    'required' => false,
+                ],
+            ],
+            'additionalParameters' => [
+                'location' => 'query',
+            ],
+        ],
+
+        'GetSaleLines' => [
+            'httpMethod'    => 'GET',
+            'uri'           => 'Account/{accountID}/SaleLine.json',
+            'responseModel' => 'GenericModel',
+            'data'          => [
+                'root_key' => 'SaleLine',
+                'is_collection' => true,
+            ],
+            'parameters' => [
+                'accountID' => [
                     'location' => 'uri',
                     'type'     => 'integer',
                     'required' => false,
