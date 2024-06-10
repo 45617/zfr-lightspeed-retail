@@ -18,6 +18,9 @@
 
 namespace ZfrLightspeedRetail\OAuth;
 
+use DateInterval;
+use DateTimeImmutable;
+use DateTimeZone;
 use GuzzleHttp\ClientInterface;
 use GuzzleHttp\Exception\ClientException;
 use GuzzleHttp\Psr7\Uri;
@@ -25,6 +28,7 @@ use InvalidArgumentException;
 use Lcobucci\JWT\Builder;
 use Lcobucci\JWT\Parser;
 use Lcobucci\JWT\Signer;
+use Lcobucci\JWT\Signer\Key\InMemory;
 use Lcobucci\JWT\Token;
 use Lcobucci\JWT\ValidationData;
 use Psr\Http\Message\UriInterface;
@@ -150,12 +154,11 @@ final class JwtAuthorizationService implements AuthorizationServiceInterface
     private function buildState(string $referenceId, array $requestedScope): Token
     {
         return (new Builder())
-            ->setIssuedAt(time())
-            ->setExpiration(time() + 60 * 10)
+            ->setIssuedAt(new DateTimeImmutable())
+            ->setExpiration(new DateTimeImmutable('+ 10 minutes'))
             ->set('uid', $referenceId)
             ->set('scope', $requestedScope)
-            ->sign($this->jwtSigner, $this->clientSecret)
-            ->getToken();
+            ->getToken($this->jwtSigner, InMemory::plainText($this->clientSecret));
     }
 
     /**
@@ -172,7 +175,7 @@ final class JwtAuthorizationService implements AuthorizationServiceInterface
             throw InvalidStateException::fromInvalidState($state, $exception);
         }
 
-        if (! $token->validate(new ValidationData()) || ! $token->verify($this->jwtSigner, $this->clientSecret)) {
+        if (!$token->validate(new ValidationData()) || !$token->verify($this->jwtSigner, InMemory::plainText($this->clientSecret))) {
             throw InvalidStateException::fromInvalidState($state);
         }
 
@@ -215,7 +218,7 @@ final class JwtAuthorizationService implements AuthorizationServiceInterface
         $grantedScope   = explode(' ', $grantedScope);
         $missingScope   = array_diff($requestedScope, $grantedScope);
 
-        if (! empty($missingScope)) {
+        if (!empty($missingScope)) {
             throw MissingRequiredScopeException::fromMissingScope($missingScope);
         }
     }
