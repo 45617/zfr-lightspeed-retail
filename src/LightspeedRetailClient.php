@@ -159,7 +159,8 @@ class LightspeedRetailClient
             return $this->iterateResources($command);
         }
 
-        return $this->serviceClient->$method($params);
+        $result = $this->serviceClient->$method($params);
+        return $result['root'] ?? $result;
     }
 
     /**
@@ -169,20 +170,24 @@ class LightspeedRetailClient
      */
     private function iterateResources(CommandInterface $command): Traversable
     {
-        // When using the iterator, we force the maximum number of items per page to 100,
-        // and we init the offset to 0 to start from start
+        // When using the iterator, we force the maximum number of items per page to 100
         $command['limit']  = 100;
-        $command['offset'] = 0;
 
         do {
             $result = $this->serviceClient->execute(clone $command);
 
-            foreach ($result as $item) {
+            $items = $result['root'];
+            foreach ($items as $item) {
                 yield $item;
             }
 
-            // Move to next page
-            $command['offset'] += 100;
-        } while (count($result) >= 100);
+            // Move to next page by applying the 'after' and 'limit' parameters from "next"
+            if ($result['@attributes']['next']) {
+                $url = parse_url($result['@attributes']['next']);
+                parse_str($url['query'], $output);
+                $command['after'] = $output['after'];
+                $command['limit'] = $output['limit'];;
+            }
+        } while ($result['@attributes']['next']);
     }
 }

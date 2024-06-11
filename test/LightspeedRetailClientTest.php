@@ -73,26 +73,30 @@ final class LightspeedRetailClientTest extends TestCase
             new Command('getSales', ['foo' => 'bar'])
         );
 
-        // offset = 0
-        $serviceClient->execute(Argument::allOf(
-            Argument::withEntry('foo', 'bar'),
-            Argument::withEntry('limit', 100),
-            Argument::withEntry('offset', 0)
-        ))->shouldBeCalled()->willReturn(new Result(array_fill(0, 100, true)));
-
         // offset = 100
         $serviceClient->execute(Argument::allOf(
             Argument::withEntry('foo', 'bar'),
             Argument::withEntry('limit', 100),
-            Argument::withEntry('offset', 100)
-        ))->shouldBeCalled()->willReturn(new Result(array_fill(0, 100, true)));
+            Argument::withEntry('after', 'a')
+        ))->shouldBeCalled()->willReturn(
+            TestResult::from(array_fill(0, 100, true), 'b')
+        );
 
         // offset = 200
         $serviceClient->execute(Argument::allOf(
             Argument::withEntry('foo', 'bar'),
             Argument::withEntry('limit', 100),
-            Argument::withEntry('offset', 200)
-        ))->shouldBeCalled()->willReturn(new Result(array_fill(0, 50, true)));
+            Argument::withEntry('after', 'b')
+        ))->shouldBeCalled()->willReturn(
+            TestResult::from(array_fill(0, 50, true))
+        );
+
+        // offset = 0 // moving this one to the bottom to avoid endless loop in test
+        $serviceClient->execute(Argument::allOf(
+            Argument::withEntry('foo', 'bar'),
+        ))->shouldBeCalled()->willReturn(
+            TestResult::from(array_fill(0, 100, true),'a')
+        );
 
         $result = $lsClient->getSalesIterator(['foo' => 'bar']);
 

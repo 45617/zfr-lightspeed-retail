@@ -43,12 +43,16 @@ final class DeserializerTest extends TestCase
         );
 
         $result = $this->deserialize($deserializer, [
+            "@attributes" => [
+                "next" => "",
+                "previous" => ""
+            ],
             'Something' => [
                 'foo' => 'bar',
             ],
         ]);
 
-        $this->assertEquals(new Result(['foo' => 'bar']), $result);
+        $this->assertEquals(TestResult::from(['foo' => 'bar']), $result);
     }
 
     public function testDoesNotUnwrapIfNoRootKey()
@@ -61,6 +65,10 @@ final class DeserializerTest extends TestCase
 
         $result = $deserializer(
             new Response(200, [], stream_for(json_encode([
+                "@attributes" => [
+                    "next" => "",
+                    "previous" => ""
+                ],
                 'Something' => [
                     'foo' => 'bar',
                 ],
@@ -69,7 +77,15 @@ final class DeserializerTest extends TestCase
             new Command('GetSomething')
         );
 
-        $this->assertEquals(new Result(['Something' => ['foo' => 'bar']]), $result);
+        $this->assertEquals(TestResult::from([
+            "@attributes" => [
+                "next" => "",
+                "previous" => ""
+            ],
+            'Something' => [
+                'foo' => 'bar',
+            ],
+        ]), $result);
     }
 
     public function testReturnsEmptyResultIfResponseDoesNotContainRootKey()
@@ -81,12 +97,16 @@ final class DeserializerTest extends TestCase
         );
 
         $result = $this->deserialize($deserializer, [
+            "@attributes" => [
+                "next" => "",
+                "previous" => ""
+            ],
             'AnotherThing' => [
                 'foo' => 'bar',
             ],
         ]);
 
-        $this->assertEquals(new Result(), $result);
+        $this->assertEquals(TestResult::from(), $result);
     }
 
     public function testReturnsResponseIfNoResultAvailable()
@@ -133,21 +153,28 @@ final class DeserializerTest extends TestCase
             new Command('GetSomething')
         );
 
-        $this->assertSame($expectedResult, $result->toArray());
+        $this->assertSame(TestResult::from($expectedResult)->toArray(), $result->toArray());
     }
 
     public function provideCollections(): Traversable
     {
         yield 'Empty collection' => [
             [
+                "@attributes" => [
+                    "next" => "",
+                    "previous" => ""
+                ],
                 'Something' => []
             ],
-            [
-            ],
+            [],
         ];
 
         yield 'Collection with a single item' => [
             [
+                "@attributes" => [
+                    "next" => "",
+                    "previous" => ""
+                ],
                 'Something' => [
                     'foo' => 'bar'
                 ]
@@ -159,6 +186,10 @@ final class DeserializerTest extends TestCase
 
         yield 'Collection with multiple items' => [
             [
+                "@attributes" => [
+                    "next" => "",
+                    "previous" => ""
+                ],
                 'Something' => [
                     ['foo' => 'bar'],
                     ['baz' => 'bat'],

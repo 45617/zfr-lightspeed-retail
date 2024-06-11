@@ -69,6 +69,7 @@ final class Deserializer
         $operation    = $this->serviceDescription->getOperation($command->getName());
         $rootKey      = $operation->getData('root_key');
         $isCollection = $operation->getData('is_collection');
+        $attributes   = $result['@attributes'] ?? [];
 
         // In Lightspeed Retail API, all responses wrap the data by the resource name.
         // For instance, using the customers endpoint will wrap the data by the "Customer" key.
@@ -83,6 +84,10 @@ final class Deserializer
         if (true === $isCollection) {
             $result = new Result(Filter::normalizeCollection($result->toArray()));
         }
+
+        $data['root'] = $result->toArray();
+        $data['@attributes'] = $attributes;
+        $result = new Result($data);
 
         return $result;
     }

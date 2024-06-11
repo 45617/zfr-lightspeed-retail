@@ -43,7 +43,7 @@ use function GuzzleHttp\Psr7\stream_for;
 /**
  * @author Daniel Gimenes
  */
-final class AuthorizationServiceTest extends TestCase
+final class JwtAuthorizationServiceTest extends TestCase
 {
     /**
      * @var ObjectProphecy
