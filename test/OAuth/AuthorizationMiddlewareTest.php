@@ -146,7 +146,7 @@ final class AuthorizationMiddlewareTest extends TestCase
         );
 
         // Since Next handler returns CommandClientException, it refreshes the token
-        $httpClient->request('POST', 'https://cloud.merchantos.com/oauth/access_token.php', [
+        $httpClient->request('POST', 'https://cloud.merchantos.com/auth/oauth/token', [
             'json' => [
                 'client_id'     => $clientId,
                 'client_secret' => $clientSecret,
@@ -155,7 +155,8 @@ final class AuthorizationMiddlewareTest extends TestCase
             ],
         ])->shouldBeCalled()->willReturn(
             new Response(200, [], stream_for(guzzle_json_encode([
-                'access_token' => 'valid'
+                'access_token'  => 'valid',
+                'refresh_token' => 'also_valid',
             ])))
         );
 
@@ -191,7 +192,7 @@ final class AuthorizationMiddlewareTest extends TestCase
         );
 
         // Since Next handler returns CommandClientException, it refreshes the token
-        $httpClient->request('POST', 'https://cloud.merchantos.com/oauth/access_token.php', [
+        $httpClient->request('POST', 'https://cloud.merchantos.com/auth/oauth/token', [
             'json' => [
                 'client_id'     => $clientId,
                 'client_secret' => $clientSecret,
@@ -201,7 +202,7 @@ final class AuthorizationMiddlewareTest extends TestCase
         // But the authorization server rejects the refresh token
         ])->shouldBeCalled()->willThrow(new ClientException(
             'Boom!',
-            new Request('POST', 'https://cloud.merchantos.com/oauth/access_token.php'),
+            new Request('POST', 'https://cloud.merchantos.com/auth/oauth/token'),
             new Response(400, [], stream_for(guzzle_json_encode([
                 'error'             => 'invalid_grant',
                 'error_description' => 'Invalid refresh token',

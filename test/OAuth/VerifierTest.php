@@ -19,39 +19,20 @@
 namespace ZfrLightspeedRetailTest\OAuth;
 
 use PHPUnit\Framework\TestCase;
-use ZfrLightspeedRetail\OAuth\Credential;
+use ZfrLightspeedRetail\OAuth\Verifier;
 
 /**
- * @author Daniel Gimenes
+ * @author 45617
  */
-final class CredentialTest extends TestCase
+final class VerifierTest extends TestCase
 {
     public function testIsArraySerializable()
     {
         $data = [
-            'reference_id'          => 'test',
-            'lightspeed_account_id' => 1234567890,
-            'access_token'          => 'foo',
-            'refresh_token'         => 'bar',
+            'reference_id'  => 'test',
+            'code'          => 'foo',
         ];
 
-        $this->assertSame($data, Credential::fromArray($data)->toArray());
-    }
-
-    public function testCreatesAnotherWithDifferentTokens()
-    {
-        $a = Credential::fromArray([
-            'reference_id'          => 'test',
-            'lightspeed_account_id' => 1234567890,
-            'access_token'          => 'foo',
-            'refresh_token'         => 'bar',
-        ]);
-
-        $b = $a->withTokens('baz', 'qux');
-
-        $this->assertSame('foo', $a->getAccessToken());
-        $this->assertSame('baz', $b->getAccessToken());
-        $this->assertSame('bar', $a->getRefreshToken());
-        $this->assertSame('qux', $b->getRefreshToken());
+        $this->assertSame($data, Verifier::fromArray($data)->toArray());
     }
 }

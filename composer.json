@@ -52,6 +52,7 @@
         }
     },
     "scripts": {
+        "autoload": "composer dump-autoload -o",
         "check": [
             "@cs-check",
             "@test",

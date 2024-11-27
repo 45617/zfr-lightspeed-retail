@@ -34,7 +34,7 @@ use function GuzzleHttp\json_decode as guzzle_json_decode;
  */
 final class AuthorizationMiddleware
 {
-    private const LS_ENDPOINT_ACCESS_TOKEN = 'https://cloud.merchantos.com/oauth/access_token.php';
+    private const LS_ENDPOINT_ACCESS_TOKEN = 'https://cloud.merchantos.com/auth/oauth/token';
 
     /**
      * @var callable
@@ -190,7 +190,7 @@ final class AuthorizationMiddleware
         }
 
         $result     = guzzle_json_decode((string) $response->getBody(), true);
-        $credential = $credential->withAccessToken($result['access_token']);
+        $credential = $credential->withTokens($result['access_token'], $result['refresh_token']);
 
         $this->credentialStorage->save($credential);
 

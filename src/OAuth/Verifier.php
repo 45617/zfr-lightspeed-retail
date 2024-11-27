@@ -19,9 +19,9 @@
 namespace ZfrLightspeedRetail\OAuth;
 
 /**
- * @author Daniel Gimenes
+ * @author 45617
  */
-final class Credential
+final class Verifier
 {
     /**
      * @var string
@@ -29,50 +29,32 @@ final class Credential
     private $referenceId;
 
     /**
-     * @var int
-     */
-    private $lightspeedAccountId;
-
-    /**
      * @var string
      */
-    private $accessToken;
-
-    /**
-     * @var string
-     */
-    private $refreshToken;
+    private $code;
 
     /**
      * @param string $referenceId
-     * @param int    $lightspeedAccountId
-     * @param string $accessToken
-     * @param string $refreshToken
+     * @param string $code
      */
     public function __construct(
         string $referenceId,
-        ?int $lightspeedAccountId,
-        string $accessToken,
-        string $refreshToken
+        string $code
     ) {
-        $this->referenceId         = $referenceId;
-        $this->lightspeedAccountId = $lightspeedAccountId;
-        $this->accessToken         = $accessToken;
-        $this->refreshToken        = $refreshToken;
+        $this->referenceId = $referenceId;
+        $this->code        = $code;
     }
 
     /**
      * @param array $data
      *
-     * @return Credential
+     * @return Verifier
      */
     public static function fromArray(array $data): self
     {
         return new self(
             $data['reference_id'],
-            $data['lightspeed_account_id'],
-            $data['access_token'],
-            $data['refresh_token']
+            $data['code'],
         );
     }
 
@@ -82,10 +64,8 @@ final class Credential
     public function toArray(): array
     {
         return [
-            'reference_id'          => $this->referenceId,
-            'lightspeed_account_id' => $this->lightspeedAccountId,
-            'access_token'          => $this->accessToken,
-            'refresh_token'         => $this->refreshToken,
+            'reference_id' => $this->referenceId,
+            'code'         => $this->code,
         ];
     }
 
@@ -98,41 +78,10 @@ final class Credential
     }
 
     /**
-     * @return int
-     */
-    public function getLightspeedAccountId(): ?int
-    {
-        return $this->lightspeedAccountId;
-    }
-
-    /**
      * @return string
      */
-    public function getAccessToken(): string
+    public function getCode(): string
     {
-        return $this->accessToken;
-    }
-
-    /**
-     * @return string
-     */
-    public function getRefreshToken(): string
-    {
-        return $this->refreshToken;
-    }
-
-    /**
-     * @param string $accessToken
-     *
-     * @return Credential
-     */
-    public function withTokens(string $accessToken, string $refreshToken): self
-    {
-        $clone = clone $this;
-
-        $clone->accessToken = $accessToken;
-        $clone->refreshToken = $refreshToken;
-
-        return $clone;
+        return $this->code;
     }
 }

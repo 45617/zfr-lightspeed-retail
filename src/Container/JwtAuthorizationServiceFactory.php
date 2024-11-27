@@ -24,6 +24,7 @@ use Lcobucci\JWT\Signer\Hmac\Sha256;
 use OutOfBoundsException;
 use ZfrLightspeedRetail\OAuth\AuthorizationServiceInterface;
 use ZfrLightspeedRetail\OAuth\CredentialStorage\CredentialStorageInterface;
+use ZfrLightspeedRetail\OAuth\VerifierStorage\VerifierStorageInterface;
 use ZfrLightspeedRetail\OAuth\JwtAuthorizationService;
 
 /**
@@ -39,6 +40,7 @@ final class JwtAuthorizationServiceFactory
     public function __invoke(ContainerInterface $container): AuthorizationServiceInterface
     {
         $credentialStorage = $container->get(CredentialStorageInterface::class);
+        $verifierStorage   = $container->get(VerifierStorageInterface::class);
         $config            = $container->get('config') ?? [];
         $config            = $config['zfr_lightspeed_retail'] ?? [];
 
@@ -50,6 +52,7 @@ final class JwtAuthorizationServiceFactory
 
         return new JwtAuthorizationService(
             $credentialStorage,
+            $verifierStorage,
             new Client(),
             new Sha256(),
             $config['client_id'],

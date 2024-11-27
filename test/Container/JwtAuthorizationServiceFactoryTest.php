@@ -23,6 +23,7 @@ use OutOfBoundsException;
 use PHPUnit\Framework\TestCase;
 use ZfrLightspeedRetail\Container\JwtAuthorizationServiceFactory;
 use ZfrLightspeedRetail\OAuth\CredentialStorage\CredentialStorageInterface;
+use ZfrLightspeedRetail\OAuth\VerifierStorage\VerifierStorageInterface;
 
 /**
  * @author Daniel Gimenes
@@ -42,7 +43,8 @@ final class JwtAuthorizationServiceFactoryTest extends TestCase
     public function testInjectsDependencies()
     {
         $container = $this->prophesize(ContainerInterface::class);
-        $storage   = $this->prophesize(CredentialStorageInterface::class);
+        $credentialStorage   = $this->prophesize(CredentialStorageInterface::class);
+        $verifierStorage   = $this->prophesize(VerifierStorageInterface::class);
         $config    = [
             'zfr_lightspeed_retail' => [
                 'client_id'     => 'foo',
@@ -50,7 +52,8 @@ final class JwtAuthorizationServiceFactoryTest extends TestCase
             ],
         ];
 
-        $container->get(CredentialStorageInterface::class)->shouldBeCalled()->willReturn($storage->reveal());
+        $container->get(CredentialStorageInterface::class)->shouldBeCalled()->willReturn($credentialStorage->reveal());
+        $container->get(VerifierStorageInterface::class)->shouldBeCalled()->willReturn($verifierStorage->reveal());
         $container->get('config')->shouldBeCalled()->willReturn($config);
 
         (new JwtAuthorizationServiceFactory())($container->reveal());
