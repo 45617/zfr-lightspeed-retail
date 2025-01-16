@@ -29,6 +29,25 @@ return [
                 'root_key'      => 'Account',
             ],
         ],
+        'GetShops' => [
+            'httpMethod'    => 'GET',
+            'uri'           => 'Account/{accountID}/Shop.json',
+            'responseModel' => 'GenericModel',
+            'data'          => [
+                'root_key'      => 'Shop',
+                'is_collection' => true,
+            ],
+            'parameters' => [
+                'accountID' => [
+                    'location' => 'uri',
+                    'type'     => 'integer',
+                    'required' => false,
+                ],
+            ],
+            'additionalParameters' => [
+                'location' => 'query',
+            ],
+        ],
         /**
          * --------------------------------------------------------------------------------
          * CUSTOMER RELATED METHODS
