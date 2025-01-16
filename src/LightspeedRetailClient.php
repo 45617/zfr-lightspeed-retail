@@ -63,7 +63,7 @@ use ZfrLightspeedRetail\OAuth\CredentialStorage\CredentialStorageInterface;
  * SALE LINE RELATED METHODS:
  *
  * @method ResultInterface getSaleLine(array $args = [])
- * 
+ *
  * WORKORDER RELATED METHODS:
  *
  * @method ResultInterface getWorkorderStatuses(array $args = [])
@@ -119,7 +119,7 @@ class LightspeedRetailClient
         $clientConfig = [];
 
         // If a default reference ID is provided in config, we add it as default command param
-        if (!empty($config['reference_id'])) {
+        if (! empty($config['reference_id'])) {
             $clientConfig['defaults']['referenceID'] = $config['reference_id'];
         }
 
@@ -160,6 +160,7 @@ class LightspeedRetailClient
         }
 
         $result = $this->serviceClient->$method($params);
+        // error_log(print_r($result, true));
         return $result['root'] ?? $result;
     }
 
@@ -175,8 +176,14 @@ class LightspeedRetailClient
 
         do {
             $result = $this->serviceClient->execute(clone $command);
-
             $items = $result['root'];
+
+            // If there's only one item it comes unwrapped. Wrap it in an array
+            $reset = reset($items);
+            if ($reset && !is_array($reset)) {
+                $items = [0 => $items];
+            }
+
             foreach ($items as $item) {
                 yield $item;
             }
@@ -186,7 +193,7 @@ class LightspeedRetailClient
                 $url = parse_url($result['@attributes']['next']);
                 parse_str($url['query'], $output);
                 $command['after'] = $output['after'];
-                $command['limit'] = $output['limit'];;
+                $command['limit'] = $output['limit'];
             }
         } while ($result['@attributes']['next']);
     }

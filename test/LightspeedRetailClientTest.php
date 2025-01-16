@@ -95,7 +95,7 @@ final class LightspeedRetailClientTest extends TestCase
         $serviceClient->execute(Argument::allOf(
             Argument::withEntry('foo', 'bar'),
         ))->shouldBeCalled()->willReturn(
-            TestResult::from(array_fill(0, 100, true),'a')
+            TestResult::from(array_fill(0, 100, true), 'a')
         );
 
         $result = $lsClient->getSalesIterator(['foo' => 'bar']);
