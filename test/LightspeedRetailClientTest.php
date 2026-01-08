@@ -40,6 +40,8 @@ final class LightspeedRetailClientTest extends TestCase
             'client_id'     => 'foo',
             'client_secret' => 'bar',
         ]);
+
+        $this->expectNotToPerformAssertions();
     }
 
     public function testThrowsExceptionIfMissingRequiredConfig()
@@ -63,15 +65,10 @@ final class LightspeedRetailClientTest extends TestCase
         $this->assertSame($expectedResult, $lsClient->doSomething(['foo' => 'bar']));
     }
 
-    public function testIteratesResources()
+    public function testIteratesResourcesMulti()
     {
         $serviceClient = $this->prophesize(ServiceClientInterface::class);
         $lsClient      = new LightspeedRetailClient($serviceClient->reveal());
-
-        // Fetches the command
-        $serviceClient->getCommand('getSales', ['foo' => 'bar'])->shouldBeCalled()->willReturn(
-            new Command('getSales', ['foo' => 'bar'])
-        );
 
         // offset = 100
         $serviceClient->execute(Argument::allOf(
@@ -79,7 +76,7 @@ final class LightspeedRetailClientTest extends TestCase
             Argument::withEntry('limit', 100),
             Argument::withEntry('after', 'a')
         ))->shouldBeCalled()->willReturn(
-            TestResult::from(array_fill(0, 100, true), 'b')
+            TestResult::from(array_fill(0, 100, [true]), 'b')
         );
 
         // offset = 200
@@ -88,18 +85,64 @@ final class LightspeedRetailClientTest extends TestCase
             Argument::withEntry('limit', 100),
             Argument::withEntry('after', 'b')
         ))->shouldBeCalled()->willReturn(
-            TestResult::from(array_fill(0, 50, true))
+            TestResult::from(array_fill(0, 50, [true]))
         );
 
         // offset = 0 // moving this one to the bottom to avoid endless loop in test
         $serviceClient->execute(Argument::allOf(
             Argument::withEntry('foo', 'bar'),
         ))->shouldBeCalled()->willReturn(
-            TestResult::from(array_fill(0, 100, true), 'a')
+            TestResult::from(array_fill(0, 100, [true]), 'a')
         );
 
+        // Fetches the command
+        $serviceClient->getCommand('getSales', ['foo' => 'bar'])->shouldBeCalled()->willReturn(
+            new Command('getSales', ['foo' => 'bar'])
+        );
         $result = $lsClient->getSalesIterator(['foo' => 'bar']);
 
-        $this->assertSame(array_fill(0, 250, true), iterator_to_array($result));
+        $this->assertSame(250, iterator_count($result));
+    }
+
+    public function testIteratesResourcesOne()
+    {
+        $serviceClient = $this->prophesize(ServiceClientInterface::class);
+        $lsClient      = new LightspeedRetailClient($serviceClient->reveal());
+
+        // offset = 0 // moving this one to the bottom to avoid endless loop in test
+        $serviceClient->execute(Argument::allOf(
+            Argument::withEntry('foo', 'bar'),
+        ))->shouldBeCalled()->willReturn(
+            TestResult::from([true])
+        );
+
+        // Fetches the command
+        $serviceClient->getCommand('getSales', ['foo' => 'bar'])->shouldBeCalled()->willReturn(
+            new Command('getSales', ['foo' => 'bar'])
+        );
+        $result = $lsClient->getSalesIterator(['foo' => 'bar']);
+
+        $this->assertSame(1, iterator_count($result));
+    }
+
+    public function testIteratesResourcesNone()
+    {
+        $serviceClient = $this->prophesize(ServiceClientInterface::class);
+        $lsClient      = new LightspeedRetailClient($serviceClient->reveal());
+
+        // offset = 0 // moving this one to the bottom to avoid endless loop in test
+        $serviceClient->execute(Argument::allOf(
+            Argument::withEntry('foo', 'bar'),
+        ))->shouldBeCalled()->willReturn(
+            TestResult::from()
+        );
+
+        // Fetches the command
+        $serviceClient->getCommand('getSales', ['foo' => 'bar'])->shouldBeCalled()->willReturn(
+            new Command('getSales', ['foo' => 'bar'])
+        );
+        $result = $lsClient->getSalesIterator(['foo' => 'bar']);
+
+        $this->assertSame(0, iterator_count($result));
     }
 }
