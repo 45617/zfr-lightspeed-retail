@@ -23,12 +23,8 @@ use GuzzleHttp\ClientInterface;
 use GuzzleHttp\Exception\ClientException;
 use GuzzleHttp\Psr7\Uri;
 use InvalidArgumentException;
-use Lcobucci\JWT\Builder;
-use Lcobucci\JWT\Parser;
-use Lcobucci\JWT\Signer;
-use Lcobucci\JWT\Signer\Key\InMemory;
+use Lcobucci\JWT\Configuration;
 use Lcobucci\JWT\Token;
-use Lcobucci\JWT\ValidationData;
 use Psr\Http\Message\UriInterface;
 use RuntimeException;
 use ZfrLightspeedRetail\Exception\InvalidStateException;
@@ -65,42 +61,30 @@ final class JwtAuthorizationService implements AuthorizationServiceInterface
     private $httpClient;
 
     /**
-     * @var Signer
-     */
-    private $jwtSigner;
-
-    /**
      * @var string
      */
     private $clientId;
 
-    /**
-     * @var string
-     */
-    private $clientSecret;
+    private Configuration $config;
 
     /**
      * @param CredentialStorageInterface $credentialStorage
      * @param VerifierStorageInterface   $verifierStorage
      * @param ClientInterface            $httpClient
-     * @param Signer                     $jwtSigner
      * @param string                     $clientId
-     * @param string                     $clientSecret
      */
     public function __construct(
         CredentialStorageInterface $credentialStorage,
         VerifierStorageInterface $verifierStorage,
         ClientInterface $httpClient,
-        Signer $jwtSigner,
         string $clientId,
-        string $clientSecret
+        Configuration $config
     ) {
         $this->credentialStorage = $credentialStorage;
         $this->verifierStorage   = $verifierStorage;
         $this->httpClient        = $httpClient;
-        $this->jwtSigner         = $jwtSigner;
         $this->clientId          = $clientId;
-        $this->clientSecret      = $clientSecret;
+        $this->config            = $config;
     }
 
     /**
@@ -124,7 +108,7 @@ final class JwtAuthorizationService implements AuthorizationServiceInterface
             self::LS_ENDPOINT_AUTHORIZE,
             $this->clientId,
             implode('+', $requestedScope),
-            $state,
+            $state->toString(),
             $code_challenge
         ));
     }
@@ -146,7 +130,7 @@ final class JwtAuthorizationService implements AuthorizationServiceInterface
     public function processCallback(string $authorizationCode, string $state): void
     {
         $stateToken = $this->parseState($state);
-        $referenceId  = $stateToken->getClaim('uid');
+        $referenceId  = $stateToken->claims()->get('uid');
         $result     = $this->exchangeAuthorizationCode($authorizationCode, $referenceId);
 
         // TODO: Update to use decoded accessToken to confirm scope
@@ -168,12 +152,14 @@ final class JwtAuthorizationService implements AuthorizationServiceInterface
      */
     private function buildState(string $referenceId, array $requestedScope): Token
     {
-        return (new Builder())
-            ->setIssuedAt(new DateTimeImmutable())
-            ->setExpiration(new DateTimeImmutable('+ 10 minutes'))
-            ->set('uid', $referenceId)
-            ->set('scope', $requestedScope)
-            ->getToken($this->jwtSigner, InMemory::plainText($this->clientSecret));
+        $now = new DateTimeImmutable();
+
+        return $this->config->builder()
+            ->issuedAt($now)
+            ->expiresAt($now->modify('+ 10 minutes'))
+            ->withClaim('uid', $referenceId)
+            ->withClaim('scope', $requestedScope)
+            ->getToken($this->config->signer(), $this->config->signingKey());
     }
 
     /**
@@ -195,15 +181,12 @@ final class JwtAuthorizationService implements AuthorizationServiceInterface
     private function parseState(string $state): Token
     {
         try {
-            $token = (new Parser())->parse($state);
+            $token = $this->config->parser()->parse($state);
         } catch (InvalidArgumentException | RuntimeException $exception) {
             throw InvalidStateException::fromInvalidState($state, $exception);
         }
 
-        if (! $token->validate(new ValidationData()) || ! $token->verify(
-            $this->jwtSigner,
-            InMemory::plainText($this->clientSecret)
-        )) {
+        if (! $this->config->validator()->validate($token, ...$this->config->validationConstraints())) {
             throw InvalidStateException::fromInvalidState($state);
         }
 
@@ -222,7 +205,7 @@ final class JwtAuthorizationService implements AuthorizationServiceInterface
             $response = $this->httpClient->request('POST', self::LS_ENDPOINT_ACCESS_TOKEN, [
                 'json' => [
                     'client_id'     => $this->clientId,
-                    'client_secret' => $this->clientSecret,
+                    'client_secret' => $this->config->signingKey()->contents(),
                     'code'          => $authorizationCode,
                     'grant_type'    => 'authorization_code',
                     'code_verifier' => $this->verifierStorage->get($referenceId)->getCode(),
@@ -243,7 +226,7 @@ final class JwtAuthorizationService implements AuthorizationServiceInterface
      */
     private function guardRequiredScope(Token $stateToken, string $grantedScope): void
     {
-        $requestedScope = $stateToken->getClaim('scope');
+        $requestedScope = $stateToken->claims()->get('scope');
         $grantedScope   = explode(' ', $grantedScope);
         $missingScope   = array_diff($requestedScope, $grantedScope);
 

@@ -25,9 +25,12 @@ use GuzzleHttp\Psr7\Query;
 use GuzzleHttp\Psr7\Request;
 use GuzzleHttp\Psr7\Response;
 use GuzzleHttp\Psr7\Utils;
-use Lcobucci\JWT\Parser;
+use Lcobucci\Clock\SystemClock;
+use Lcobucci\JWT\Configuration;
 use Lcobucci\JWT\Signer\Hmac\Sha256;
 use Lcobucci\JWT\Signer\Key\InMemory;
+use Lcobucci\JWT\Validation\Constraint\SignedWith;
+use Lcobucci\JWT\Validation\Constraint\ValidAt;
 use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
 use Prophecy\Prophecy\ObjectProphecy;
@@ -67,19 +70,28 @@ final class JwtAuthorizationServiceTest extends TestCase
      */
     private $authorizationService;
 
+    private Configuration $configuration;
+
+    private $clientSecret = "abc123abc123abc123abc123abc123abc123";
+
     public function setUp(): void
     {
         $this->credentialStorage = $this->prophesize(CredentialStorageInterface::class);
         $this->verifierStorage   = $this->prophesize(VerifierStorageInterface::class);
         $this->httpClient        = $this->prophesize(ClientInterface::class);
 
+        $this->configuration = Configuration::forSymmetricSigner(new Sha256(), InMemory::plainText($this->clientSecret));
+        $this->configuration->setValidationConstraints(
+            new SignedWith($this->configuration->signer(), $this->configuration->signingKey()),
+            new ValidAt(SystemClock::fromUTC()),
+        );
+
         $this->authorizationService = new JwtAuthorizationService(
             $this->credentialStorage->reveal(),
             $this->verifierStorage->reveal(),
             $this->httpClient->reveal(),
-            new Sha256(),
             '123',
-            'abc123'
+            $this->configuration
         );
     }
 
@@ -111,13 +123,12 @@ final class JwtAuthorizationServiceTest extends TestCase
             }
         ))->shouldBeCalled();
 
-        $state = (new Parser())->parse($query['state']);
+        $state = $this->configuration->parser()->parse($query['state']);
 
         $this->assertFalse($state->isExpired(new DateTimeImmutable()));
         $this->assertTrue($state->isExpired(new DateTimeImmutable('+ 11 minutes')));
-        $this->assertTrue($state->verify(new Sha256(), InMemory::plainText('abc123')));
-        $this->assertSame($referenceId, $state->getClaim('uid'));
-        $this->assertSame($requestedScope, $state->getClaim('scope'));
+        $this->assertSame($referenceId, $state->claims()->get('uid'));
+        $this->assertSame($requestedScope, $state->claims()->get('scope'));
     }
 
     public function testExchangesAndStoresTokens()
@@ -143,7 +154,7 @@ final class JwtAuthorizationServiceTest extends TestCase
         $this->httpClient->request('POST', 'https://cloud.lightspeedapp.com/auth/oauth/token', [
             'json' => [
                 'client_id'     => '123',
-                'client_secret' => 'abc123',
+                'client_secret' => $this->clientSecret,
                 'code'          => $authorizationCode,
                 'grant_type'    => 'authorization_code',
                 'code_verifier' => $code_verifier,
@@ -210,7 +221,7 @@ final class JwtAuthorizationServiceTest extends TestCase
         $this->httpClient->request('POST', 'https://cloud.lightspeedapp.com/auth/oauth/token', [
             'json' => [
                 'client_id'     => '123',
-                'client_secret' => 'abc123',
+                'client_secret' => $this->clientSecret,
                 'code'          => $authorizationCode,
                 'grant_type'    => 'authorization_code',
                 'code_verifier' => $code_verifier,
@@ -250,7 +261,7 @@ final class JwtAuthorizationServiceTest extends TestCase
         $this->httpClient->request('POST', 'https://cloud.lightspeedapp.com/auth/oauth/token', [
             'json' => [
                 'client_id'     => '123',
-                'client_secret' => 'abc123',
+                'client_secret' => $this->clientSecret,
                 'code'          => $authorizationCode,
                 'grant_type'    => 'authorization_code',
                 'code_verifier' => $code_verifier,
@@ -285,9 +296,8 @@ final class JwtAuthorizationServiceTest extends TestCase
             $this->prophesize(CredentialStorageInterface::class)->reveal(),
             $this->prophesize(VerifierStorageInterface::class)->reveal(),
             $this->prophesize(ClientInterface::class)->reveal(),
-            new Sha256(),
             '123',
-            'foobar' // Different secret
+            Configuration::forSymmetricSigner(new Sha256(), InMemory::plainText('foobarfoobarfoobarfoobarfoobarfoobar')) // Different secret
         ))->buildAuthorizationUrl('omc-demo.myshopify.com', ['employee:all']);
 
         $usignedState =  Query::parse($authUrl->getQuery(), false)['state'];

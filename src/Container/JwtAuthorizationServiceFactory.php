@@ -20,7 +20,12 @@ namespace ZfrLightspeedRetail\Container;
 
 use GuzzleHttp\Client;
 use Interop\Container\ContainerInterface;
+use Lcobucci\Clock\SystemClock;
+use Lcobucci\JWT\Configuration;
 use Lcobucci\JWT\Signer\Hmac\Sha256;
+use Lcobucci\JWT\Signer\Key\InMemory;
+use Lcobucci\JWT\Validation\Constraint\SignedWith;
+use Lcobucci\JWT\Validation\Constraint\ValidAt;
 use OutOfBoundsException;
 use ZfrLightspeedRetail\OAuth\AuthorizationServiceInterface;
 use ZfrLightspeedRetail\OAuth\CredentialStorage\CredentialStorageInterface;
@@ -49,14 +54,18 @@ final class JwtAuthorizationServiceFactory
                 'Missing "client_id" and "client_secret" config for ZfrLightspeedRetail'
             );
         }
+        $configuration = Configuration::forSymmetricSigner(new Sha256(), InMemory::plainText($config['client_secret']));
+        $configuration->setValidationConstraints(
+            new SignedWith($configuration->signer(), $configuration->signingKey()),
+            new ValidAt(SystemClock::fromUTC()),
+        );
 
         return new JwtAuthorizationService(
             $credentialStorage,
             $verifierStorage,
             new Client(),
-            new Sha256(),
             $config['client_id'],
-            $config['client_secret']
+            $configuration
         );
     }
 }
