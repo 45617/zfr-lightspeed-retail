@@ -25,7 +25,7 @@ use Lcobucci\JWT\Configuration;
 use Lcobucci\JWT\Signer\Hmac\Sha256;
 use Lcobucci\JWT\Signer\Key\InMemory;
 use Lcobucci\JWT\Validation\Constraint\SignedWith;
-use Lcobucci\JWT\Validation\Constraint\ValidAt;
+use Lcobucci\JWT\Validation\Constraint\LooseValidAt;
 use OutOfBoundsException;
 use ZfrLightspeedRetail\OAuth\AuthorizationServiceInterface;
 use ZfrLightspeedRetail\OAuth\CredentialStorage\CredentialStorageInterface;
@@ -57,7 +57,7 @@ final class JwtAuthorizationServiceFactory
         $configuration = Configuration::forSymmetricSigner(new Sha256(), InMemory::plainText($config['client_secret']));
         $configuration->setValidationConstraints(
             new SignedWith($configuration->signer(), $configuration->signingKey()),
-            new ValidAt(SystemClock::fromUTC()),
+            new LooseValidAt(SystemClock::fromUTC()),
         );
 
         return new JwtAuthorizationService(

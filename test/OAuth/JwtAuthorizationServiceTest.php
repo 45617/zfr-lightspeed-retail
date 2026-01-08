@@ -30,7 +30,7 @@ use Lcobucci\JWT\Configuration;
 use Lcobucci\JWT\Signer\Hmac\Sha256;
 use Lcobucci\JWT\Signer\Key\InMemory;
 use Lcobucci\JWT\Validation\Constraint\SignedWith;
-use Lcobucci\JWT\Validation\Constraint\ValidAt;
+use Lcobucci\JWT\Validation\Constraint\LooseValidAt;
 use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
 use Prophecy\Prophecy\ObjectProphecy;
@@ -84,7 +84,7 @@ final class JwtAuthorizationServiceTest extends TestCase
         $this->configuration = Configuration::forSymmetricSigner(new Sha256(), InMemory::plainText($this->clientSecret));
         $this->configuration->setValidationConstraints(
             new SignedWith($this->configuration->signer(), $this->configuration->signingKey()),
-            new ValidAt(SystemClock::fromUTC()),
+            new LooseValidAt(SystemClock::fromUTC()),
         );
 
         $this->authorizationService = new JwtAuthorizationService(
