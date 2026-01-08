@@ -270,6 +270,95 @@ return [
                 ],
             ],
         ],
+        
+        'GetCustomerCustomFields' => [
+            'httpMethod'    => 'GET',
+            'uri'           => 'Account/{accountID}/Customer/CustomField.json',
+            'responseModel' => 'GenericModel',
+            'data'          => [
+                'root_key'      => 'CustomField',
+                'is_collection' => true,
+            ],
+            'parameters' => [
+                'accountID' => [
+                    'location' => 'uri',
+                    'type'     => 'integer',
+                    'required' => false,
+                ],
+                'limit' => [
+                    'location' => 'query',
+                    'required' => false,
+                    'type'     => 'integer',
+                ],
+                'offset' => [
+                    'location' => 'query',
+                    'required' => false,
+                    'type'     => 'integer',
+                ],
+                'archived' => [
+                    'location' => 'query',
+                    'required' => false,
+                    'type'     => 'boolean',
+                ],
+                'timeStamp' => [
+                    'location' => 'query',
+                    'required' => false,
+                    'type'     => 'string',
+                ],
+                'load_relations' => [
+                    'location' => 'query',
+                    'type'     => 'string',
+                    'required' => false,
+                ],
+                'orderby' => [
+                    'location' => 'query',
+                    'type'     => 'string',
+                    'required' => false,
+                ],
+            ],
+            'additionalParameters' => [
+                'location' => 'query',
+            ],
+        ],
+        
+        'CreateCustomerCustomField' => [
+            'httpMethod'    => 'POST',
+            'uri'           => 'Account/{accountID}/Customer/CustomField.json',
+            'responseModel' => 'GenericModel',
+            'data'          => [
+                'root_key'      => 'CustomField',
+            ],
+            'parameters' => [
+                'accountID' => [
+                    'location' => 'uri',
+                    'type'     => 'integer',
+                    'required' => false,
+                ],
+                'type' => [
+                    'location' => 'json',
+                    'required' => true,
+                    'type'     => 'string',
+                ],
+                'name' => [
+                    'location' => 'json',
+                    'required' => true,
+                    'type'     => 'string',
+                ],
+                'uom' => [
+                    'location' => 'json',
+                    'required' => false,
+                    'type'     => 'string',
+                ],
+                'default' => [
+                    'location' => 'json',
+                    'required' => false,
+                    'type'     => 'string',
+                ],
+            ],
+            'additionalParameters' => [
+                'location' => 'query',
+            ],
+        ],
 
         /**
          * --------------------------------------------------------------------------------
