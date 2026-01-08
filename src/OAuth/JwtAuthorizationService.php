@@ -32,7 +32,7 @@ use ZfrLightspeedRetail\Exception\MissingRequiredScopeException;
 use ZfrLightspeedRetail\Exception\UnauthorizedException;
 use ZfrLightspeedRetail\OAuth\CredentialStorage\CredentialStorageInterface;
 use ZfrLightspeedRetail\OAuth\VerifierStorage\VerifierStorageInterface;
-use function GuzzleHttp\json_decode as guzzle_json_decode;
+use GuzzleHttp\Utils as GUtils;
 
 /**
  * @author Daniel Gimenes
@@ -215,7 +215,7 @@ final class JwtAuthorizationService implements AuthorizationServiceInterface
             throw UnauthorizedException::authorizationCodeRejected($authorizationCode);
         }
 
-        return guzzle_json_decode((string) $response->getBody(), true);
+        return GUtils::jsonDecode((string) $response->getBody(), true);
     }
 
     /**
@@ -246,7 +246,7 @@ final class JwtAuthorizationService implements AuthorizationServiceInterface
             'headers' => ['Authorization' => sprintf('Bearer %s', $accessToken)],
         ]);
 
-        $result = guzzle_json_decode((string) $response->getBody(), true);
+        $result = GUtils::jsonDecode((string) $response->getBody(), true);
 
         return $result['Account']['accountID'];
     }

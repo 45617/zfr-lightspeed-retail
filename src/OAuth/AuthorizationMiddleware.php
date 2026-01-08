@@ -27,7 +27,7 @@ use GuzzleHttp\Promise\RejectedPromise;
 use Throwable;
 use ZfrLightspeedRetail\Exception\UnauthorizedException;
 use ZfrLightspeedRetail\OAuth\CredentialStorage\CredentialStorageInterface;
-use function GuzzleHttp\json_decode as guzzle_json_decode;
+use GuzzleHttp\Utils as GUtils;
 
 /**
  * @author Daniel Gimenes
@@ -189,7 +189,7 @@ final class AuthorizationMiddleware
             throw UnauthorizedException::refreshTokenRejected($refreshToken, $exception);
         }
 
-        $result     = guzzle_json_decode((string) $response->getBody(), true);
+        $result     = GUtils::jsonDecode((string) $response->getBody(), true);
         $credential = $credential->withTokens($result['access_token'], $result['refresh_token']);
 
         $this->credentialStorage->save($credential);

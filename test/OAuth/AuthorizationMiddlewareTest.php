@@ -36,7 +36,7 @@ use ZfrLightspeedRetail\Exception\UnauthorizedException;
 use ZfrLightspeedRetail\OAuth\AuthorizationMiddleware;
 use ZfrLightspeedRetail\OAuth\Credential;
 use ZfrLightspeedRetail\OAuth\CredentialStorage\InMemoryCredentialStorage;
-use function GuzzleHttp\json_encode as guzzle_json_encode;
+use GuzzleHttp\Utils as GUtils;
 
 /**
  * @author Daniel Gimenes
@@ -155,7 +155,7 @@ final class AuthorizationMiddlewareTest extends TestCase
                 'grant_type'    => 'refresh_token',
             ],
         ])->shouldBeCalled()->willReturn(
-            new Response(200, [], Utils::streamFor(guzzle_json_encode([
+            new Response(200, [], Utils::streamFor(GUtils::jsonEncode([
                 'access_token'  => 'valid',
                 'refresh_token' => 'also_valid',
             ])))
@@ -204,7 +204,7 @@ final class AuthorizationMiddlewareTest extends TestCase
         ])->shouldBeCalled()->willThrow(new ClientException(
             'Boom!',
             new Request('POST', 'https://cloud.merchantos.com/auth/oauth/token'),
-            new Response(400, [], Utils::streamFor(guzzle_json_encode([
+            new Response(400, [], Utils::streamFor(GUtils::jsonEncode([
                 'error'             => 'invalid_grant',
                 'error_description' => 'Invalid refresh token',
             ])))

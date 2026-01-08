@@ -43,7 +43,7 @@ use ZfrLightspeedRetail\OAuth\CredentialStorage\CredentialStorageInterface;
 use ZfrLightspeedRetail\OAuth\VerifierStorage\VerifierStorageInterface;
 use ZfrLightspeedRetail\OAuth\JwtAuthorizationService;
 use ZfrLightspeedRetail\OAuth\Verifier;
-use function GuzzleHttp\json_encode as guzzle_json_encode;
+use GuzzleHttp\Utils as GUtils;
 
 /**
  * @author Daniel Gimenes
@@ -161,7 +161,7 @@ final class JwtAuthorizationServiceTest extends TestCase
                 'code_verifier' => $code_verifier,
             ],
         ])->shouldBeCalled()->willReturn(
-            new Response(200, [], Utils::streamFor(guzzle_json_encode([
+            new Response(200, [], Utils::streamFor(GUtils::jsonEncode([
                 'access_token'  => 'foo',
                 'refresh_token' => 'bar',
             ])))
@@ -171,7 +171,7 @@ final class JwtAuthorizationServiceTest extends TestCase
         $this->httpClient->request('GET', 'https://api.lightspeedapp.com/API/Account.json', [
             'headers' => ['Authorization' => 'Bearer foo'],
         ])->shouldBeCalled()->willReturn(
-            new Response(200, [], Utils::streamFor(guzzle_json_encode([
+            new Response(200, [], Utils::streamFor(GUtils::jsonEncode([
                 'Account' => ['accountID' => '123456'],
             ])))
         );
@@ -268,7 +268,7 @@ final class JwtAuthorizationServiceTest extends TestCase
                 'code_verifier' => $code_verifier,
             ],
         ])->shouldBeCalled()->willReturn(
-            new Response(200, [], Utils::streamFor(guzzle_json_encode([
+            new Response(200, [], Utils::streamFor(GUtils::jsonEncode([
                 'access_token'  => 'foo',
                 'scope'         => 'employee:inventory systemuserid:393608', // Missing "register" and "reports"
                 'refresh_token' => 'bar',
