@@ -21,8 +21,10 @@ namespace ZfrLightspeedRetailTest\OAuth;
 use DateTimeImmutable;
 use GuzzleHttp\ClientInterface;
 use GuzzleHttp\Exception\ClientException;
+use GuzzleHttp\Psr7\Query;
 use GuzzleHttp\Psr7\Request;
 use GuzzleHttp\Psr7\Response;
+use GuzzleHttp\Psr7\Utils;
 use Lcobucci\JWT\Parser;
 use Lcobucci\JWT\Signer\Hmac\Sha256;
 use Lcobucci\JWT\Signer\Key\InMemory;
@@ -39,8 +41,6 @@ use ZfrLightspeedRetail\OAuth\VerifierStorage\VerifierStorageInterface;
 use ZfrLightspeedRetail\OAuth\JwtAuthorizationService;
 use ZfrLightspeedRetail\OAuth\Verifier;
 use function GuzzleHttp\json_encode as guzzle_json_encode;
-use function GuzzleHttp\Psr7\parse_query;
-use function GuzzleHttp\Psr7\stream_for;
 
 /**
  * @author Daniel Gimenes
@@ -67,7 +67,7 @@ final class JwtAuthorizationServiceTest extends TestCase
      */
     private $authorizationService;
 
-    public function setUp()
+    public function setUp(): void
     {
         $this->credentialStorage = $this->prophesize(CredentialStorageInterface::class);
         $this->verifierStorage   = $this->prophesize(VerifierStorageInterface::class);
@@ -93,7 +93,7 @@ final class JwtAuthorizationServiceTest extends TestCase
         $this->assertSame('cloud.lightspeedapp.com', $authorizationUrl->getHost());
         $this->assertSame('/auth/oauth/authorize', $authorizationUrl->getPath());
 
-        $query = parse_query($authorizationUrl->getQuery(), false);
+        $query = Query::parse($authorizationUrl->getQuery(), false);
 
         $this->assertSame('code', $query['response_type']);
         $this->assertSame('123', $query['client_id']);
@@ -129,7 +129,7 @@ final class JwtAuthorizationServiceTest extends TestCase
 
         // Mocked auth code + state returned by Lightspeed Authorization Server
         $authorizationCode = '123456789';
-        $state             = parse_query($authorizationUrl->getQuery(), false)['state'];
+        $state             = Query::parse($authorizationUrl->getQuery(), false)['state'];
         $code_verifier     = 'foo';
 
         // Get code verifier from storage
@@ -149,7 +149,7 @@ final class JwtAuthorizationServiceTest extends TestCase
                 'code_verifier' => $code_verifier,
             ],
         ])->shouldBeCalled()->willReturn(
-            new Response(200, [], stream_for(guzzle_json_encode([
+            new Response(200, [], Utils::streamFor(guzzle_json_encode([
                 'access_token'  => 'foo',
                 'refresh_token' => 'bar',
             ])))
@@ -159,7 +159,7 @@ final class JwtAuthorizationServiceTest extends TestCase
         $this->httpClient->request('GET', 'https://api.lightspeedapp.com/API/Account.json', [
             'headers' => ['Authorization' => 'Bearer foo'],
         ])->shouldBeCalled()->willReturn(
-            new Response(200, [], stream_for(guzzle_json_encode([
+            new Response(200, [], Utils::streamFor(guzzle_json_encode([
                 'Account' => ['accountID' => '123456'],
             ])))
         );
@@ -196,7 +196,7 @@ final class JwtAuthorizationServiceTest extends TestCase
             ['employee:all']
         );
 
-        $validState        = parse_query($authUrl->getQuery(), false)['state'];
+        $validState        = Query::parse($authUrl->getQuery(), false)['state'];
         $authorizationCode = '123456';
         $code_verifier     = 'foo';
 
@@ -216,7 +216,7 @@ final class JwtAuthorizationServiceTest extends TestCase
                 'code_verifier' => $code_verifier,
             ],
         ])->shouldBeCalled()->willThrow(
-            new ClientException('Boom!', new Request('GET', 'https://cloud.lightspeedapp.com/auth/oauth/token'))
+            new ClientException('Boom!', new Request('GET', 'https://cloud.lightspeedapp.com/auth/oauth/token'), new Response())
         );
 
         $this->expectException(UnauthorizedException::class);
@@ -235,7 +235,7 @@ final class JwtAuthorizationServiceTest extends TestCase
             ['employee:register', 'employee:inventory', 'employee:reports']
         );
 
-        $validState        = parse_query($authUrl->getQuery(), false)['state'];
+        $validState        = Query::parse($authUrl->getQuery(), false)['state'];
         $authorizationCode = '123456';
         $code_verifier     = 'foo';
 
@@ -256,7 +256,7 @@ final class JwtAuthorizationServiceTest extends TestCase
                 'code_verifier' => $code_verifier,
             ],
         ])->shouldBeCalled()->willReturn(
-            new Response(200, [], stream_for(guzzle_json_encode([
+            new Response(200, [], Utils::streamFor(guzzle_json_encode([
                 'access_token'  => 'foo',
                 'scope'         => 'employee:inventory systemuserid:393608', // Missing "register" and "reports"
                 'refresh_token' => 'bar',
@@ -290,7 +290,7 @@ final class JwtAuthorizationServiceTest extends TestCase
             'foobar' // Different secret
         ))->buildAuthorizationUrl('omc-demo.myshopify.com', ['employee:all']);
 
-        $usignedState = parse_query($authUrl->getQuery(), false)['state'];
+        $usignedState =  Query::parse($authUrl->getQuery(), false)['state'];
 
         yield 'Unsigned' => [$usignedState];
     }

@@ -20,7 +20,7 @@ namespace ZfrLightspeedRetailTest;
 
 use GuzzleHttp\Exception\ClientException;
 use GuzzleHttp\Exception\ConnectException;
-use GuzzleHttp\Exception\RequestException;
+use GuzzleHttp\Exception\TransferException;
 use GuzzleHttp\Psr7\Request;
 use GuzzleHttp\Psr7\Response;
 use PHPUnit\Framework\TestCase;
@@ -41,14 +41,14 @@ final class RetryStrategyTest extends TestCase
      * @param int                    $retries
      * @param RequestInterface       $request
      * @param ResponseInterface|null $response
-     * @param RequestException|null  $exception
+     * @param TransferException|null  $exception
      */
     public function testDecides(
         bool $shouldRetry,
         int $retries,
         RequestInterface $request,
-        ResponseInterface $response = null,
-        RequestException $exception = null
+        ?ResponseInterface $response = null,
+        ?TransferException $exception = null
     ) {
         $this->assertSame(
             $shouldRetry,
@@ -75,6 +75,6 @@ final class RetryStrategyTest extends TestCase
         yield [false, 10, $request, null, new ConnectException('Boom!', $request)];
 
         // Other exception
-        yield [false, 1, $request, null, new ClientException('Boom!', $request)];
+        yield [false, 1, $request, null, new ClientException('Boom!', $request, new Response())];
     }
 }

@@ -30,6 +30,6 @@ final class ConfigProviderTest extends TestCase
     {
         $config = (new ConfigProvider())();
 
-        $this->assertInternalType('array', $config);
+        $this->assertIsArray($config);
     }
 }

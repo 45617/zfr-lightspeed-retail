@@ -24,10 +24,10 @@ use GuzzleHttp\Command\Guzzle\Deserializer as GuzzleDeserializer;
 use GuzzleHttp\Command\Result;
 use GuzzleHttp\Psr7\Request;
 use GuzzleHttp\Psr7\Response;
+use GuzzleHttp\Psr7\Utils;
 use PHPUnit\Framework\TestCase;
 use Traversable;
 use ZfrLightspeedRetail\Deserializer;
-use function GuzzleHttp\Psr7\stream_for;
 
 /**
  * @author Daniel Gimenes
@@ -64,7 +64,7 @@ final class DeserializerTest extends TestCase
         );
 
         $result = $deserializer(
-            new Response(200, [], stream_for(json_encode([
+            new Response(200, [], Utils::streamFor(json_encode([
                 "@attributes" => [
                     "next" => "",
                     "previous" => ""
@@ -118,7 +118,7 @@ final class DeserializerTest extends TestCase
             $description
         );
 
-        $response = new Response(200, [], stream_for(json_encode([
+        $response = new Response(200, [], Utils::streamFor(json_encode([
             'Something' => [
                 'foo' => 'bar',
             ],
@@ -148,7 +148,7 @@ final class DeserializerTest extends TestCase
         );
 
         $result = $deserializer(
-            new Response(200, [], stream_for(json_encode($responseData))),
+            new Response(200, [], Utils::streamFor(json_encode($responseData))),
             new Request('GET', '/something'),
             new Command('GetSomething')
         );
@@ -244,7 +244,7 @@ final class DeserializerTest extends TestCase
     private function deserialize($deserializer, $payload)
     {
         $result = $deserializer(
-            new Response(200, [], stream_for(json_encode($payload))),
+            new Response(200, [], Utils::streamFor(json_encode($payload))),
             new Request('GET', '/something'),
             new Command('GetSomething')
         );

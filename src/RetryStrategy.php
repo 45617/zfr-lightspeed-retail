@@ -19,7 +19,7 @@
 namespace ZfrLightspeedRetail;
 
 use GuzzleHttp\Exception\ConnectException;
-use GuzzleHttp\Exception\RequestException;
+use GuzzleHttp\Exception\TransferException;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
 
@@ -50,15 +50,15 @@ class RetryStrategy
      * @param int                    $retries
      * @param RequestInterface       $request
      * @param null|ResponseInterface $response
-     * @param null|RequestException  $exception
+     * @param null|TransferException  $exception
      *
      * @return bool
      */
     public function __invoke(
         int $retries,
         RequestInterface $request,
-        ResponseInterface $response = null,
-        RequestException $exception = null
+        ?ResponseInterface $response = null,
+        ?TransferException $exception = null
     ): bool {
         // Limit to the number of max retries
         if ($retries >= $this->maxRetries) {

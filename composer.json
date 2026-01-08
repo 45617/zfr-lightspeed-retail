@@ -21,22 +21,28 @@
             "homepage": "http://www.michaelgallego.fr"
         }
     ],
+    "config": {
+        "platform": {
+            "php": "7.2.5"
+        }
+    },
     "require": {
         "php": "^7.1",
         "container-interop/container-interop": "^1.1",
         "guzzlehttp/command": "^1.0",
-        "guzzlehttp/guzzle": "^6.2",
+        "guzzlehttp/guzzle": "^7.0",
         "guzzlehttp/guzzle-services": "^1.0",
-        "guzzlehttp/psr7": "^1.3",
+        "guzzlehttp/psr7": "^2.0",
         "psr/http-message": "^1.0",
         "lcobucci/jwt": "^3.2"
     },
     "require-dev": {
-        "phpunit/phpunit": "^5.7",
+        "phpunit/phpunit": "^8.0",
         "squizlabs/php_codesniffer": "^2.9",
         "zendframework/zend-coding-standard": "^1.0",
         "zendframework/zend-servicemanager": "^3.0",
-        "malukenho/docheader": "^0.1.5"
+        "malukenho/docheader": "^0.1.5",
+        "phpspec/prophecy": "^1.21"
     },
     "suggest": {
         "zendframework/zend-servicemanager": "If you want to use built-in container factories"
@@ -61,7 +67,8 @@
         "cs-check": "phpcs",
         "cs-fix": "phpcbf",
         "test": "phpunit",
-        "license-check": "vendor/bin/docheader check config src test "
+        "license-check": "vendor/bin/docheader check config src test ",
+        "cleanInstall": "rm -rf vendor && composer install --optimize-autoloader"
     },
     "extra": {
         "zf": {
