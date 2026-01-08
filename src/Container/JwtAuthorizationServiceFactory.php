@@ -19,7 +19,7 @@
 namespace ZfrLightspeedRetail\Container;
 
 use GuzzleHttp\Client;
-use Interop\Container\ContainerInterface;
+use Psr\Container\ContainerInterface;
 use Lcobucci\Clock\SystemClock;
 use Lcobucci\JWT\Configuration;
 use Lcobucci\JWT\Signer\Hmac\Sha256;

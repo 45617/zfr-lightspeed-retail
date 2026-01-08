@@ -32,6 +32,7 @@ use ZfrLightspeedRetailTest\TestAsset\ServiceClientInterface;
  */
 final class LightspeedRetailClientTest extends TestCase
 {
+    use \Prophecy\PhpUnit\ProphecyTrait;
     public function testCreatesFromDefaults()
     {
         $storage = $this->prophesize(CredentialStorageInterface::class);

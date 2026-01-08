@@ -56,7 +56,7 @@ final class RetryStrategyTest extends TestCase
         );
     }
 
-    public function provideRetries(): Traversable
+    public static function provideRetries(): Traversable
     {
         $request = new Request('GET', '/something');
 

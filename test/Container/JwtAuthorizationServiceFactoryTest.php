@@ -18,7 +18,7 @@
 
 namespace ZfrLightspeedRetailTest\Container;
 
-use Interop\Container\ContainerInterface;
+use Psr\Container\ContainerInterface;
 use OutOfBoundsException;
 use PHPUnit\Framework\TestCase;
 use ZfrLightspeedRetail\Container\JwtAuthorizationServiceFactory;
@@ -30,6 +30,7 @@ use ZfrLightspeedRetail\OAuth\VerifierStorage\VerifierStorageInterface;
  */
 final class JwtAuthorizationServiceFactoryTest extends TestCase
 {
+    use \Prophecy\PhpUnit\ProphecyTrait;
     public function testThrowsExceptionIfMissingConfig()
     {
         $container = $this->prophesize(ContainerInterface::class);

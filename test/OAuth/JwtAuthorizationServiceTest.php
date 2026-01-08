@@ -50,6 +50,7 @@ use function GuzzleHttp\json_encode as guzzle_json_encode;
  */
 final class JwtAuthorizationServiceTest extends TestCase
 {
+    use \Prophecy\PhpUnit\ProphecyTrait;
     /**
      * @var ObjectProphecy
      */

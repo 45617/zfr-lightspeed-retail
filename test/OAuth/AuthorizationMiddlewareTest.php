@@ -43,6 +43,7 @@ use function GuzzleHttp\json_encode as guzzle_json_encode;
  */
 final class AuthorizationMiddlewareTest extends TestCase
 {
+    use \Prophecy\PhpUnit\ProphecyTrait;
     public function testAuthorizesCommand()
     {
         $referenceId = 'omc-demo.myshopify.com';
@@ -219,7 +220,7 @@ final class AuthorizationMiddlewareTest extends TestCase
     {
         $httpClient = $this->prophesize(ClientInterface::class);
         $middleware = new AuthorizationMiddleware(
-            function () {
+            function (): void {
                 $this->fail('Next handler should not be called');
             },
             new InMemoryCredentialStorage([]),
@@ -242,7 +243,7 @@ final class AuthorizationMiddlewareTest extends TestCase
     {
         $httpClient = $this->prophesize(ClientInterface::class);
         $middleware = new AuthorizationMiddleware(
-            function () {
+            function (): void {
                 $this->fail('Next handler should not be called');
             },
             new InMemoryCredentialStorage([]),

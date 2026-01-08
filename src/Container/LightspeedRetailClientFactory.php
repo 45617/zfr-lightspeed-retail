@@ -18,7 +18,7 @@
 
 namespace ZfrLightspeedRetail\Container;
 
-use Interop\Container\ContainerInterface;
+use Psr\Container\ContainerInterface;
 use ZfrLightspeedRetail\LightspeedRetailClient;
 use ZfrLightspeedRetail\OAuth\CredentialStorage\CredentialStorageInterface;
 

@@ -18,8 +18,8 @@
 
 namespace ZfrLightspeedRetailTest\Container;
 
-use Interop\Container\ContainerInterface;
 use PHPUnit\Framework\TestCase;
+use Psr\Container\ContainerInterface;
 use ZfrLightspeedRetail\Container\LightspeedRetailClientFactory;
 use ZfrLightspeedRetail\OAuth\CredentialStorage\CredentialStorageInterface;
 
@@ -28,6 +28,7 @@ use ZfrLightspeedRetail\OAuth\CredentialStorage\CredentialStorageInterface;
  */
 final class LightspeedRetailClientFactoryTest extends TestCase
 {
+    use \Prophecy\PhpUnit\ProphecyTrait;
     public function testInjectsDependencies()
     {
         $container = $this->prophesize(ContainerInterface::class);

@@ -156,7 +156,7 @@ final class DeserializerTest extends TestCase
         $this->assertSame(TestResult::from($expectedResult)->toArray(), $result->toArray());
     }
 
-    public function provideCollections(): Traversable
+    public static function provideCollections(): Traversable
     {
         yield 'Empty collection' => [
             [

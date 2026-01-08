@@ -99,7 +99,7 @@ final class LeakyBucketMiddlewareTest extends TestCase
     /**
      * @return Traversable
      */
-    public function provideRequests(): Traversable
+    public static function provideRequests(): Traversable
     {
         yield ['GET',  '59/60', null];
         yield ['POST', '50/60', null];
