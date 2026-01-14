@@ -27,7 +27,6 @@
         }
     },
     "require": {
-        "php": "^8.2",
         "psr/container": "^1.1",
         "guzzlehttp/command": "^1.0",
         "guzzlehttp/guzzle": "^7.0",
